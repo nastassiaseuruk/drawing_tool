@@ -20,7 +20,7 @@ class CanvasDrawer:
             canvas[i][self.width+1][0] = self.h_fill
         self.canvas = canvas
 
-    def create_line(self, x1, y1, x2, y2):
+    def create_line(self, x1: str, y1: str, x2: str, y2: str):
         x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
         if x1 == x2:
             for y in range(y1, y2 + 1):
@@ -32,7 +32,7 @@ class CanvasDrawer:
             # write your own error
             raise AttributeError
 
-    def draw_rectangle(self, x1, y1, x2, y2):
+    def draw_rectangle(self, x1: str, y1: str, x2: str, y2: str):
         x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
         for i in range(x1, x2+1):
             self.canvas[y1][i][0] = self.line_fill
@@ -70,13 +70,12 @@ class CanvasDrawer:
                 else:
                     break
 
-    def write_in_output(self, path):
+    def write_in_output(self, path: str):
         with open(path, "a") as o:
             for row in self.canvas:
                 for i in row:
                     o.write(i[0])
                 o.write("\n")
-
 
     FUNCTION_MAPPING = {
         "C": create_canvas,
@@ -86,8 +85,8 @@ class CanvasDrawer:
     }
 
 
-def drawing_tool(path):
-    with open(path, "r") as f:
+def drawing_tool(path_to_input: str, path_to_output: str):
+    with open(path_to_input, "r") as f:
         canvas = None
         for line in f:
             function_key, args = line.split(" ", 1)
@@ -96,10 +95,14 @@ def drawing_tool(path):
                 canvas = CanvasDrawer(*args)
             if canvas:
                 canvas.FUNCTION_MAPPING[function_key](canvas, *args)
-                canvas.write_in_output("out.txt")
+                canvas.write_in_output(path_to_output)
             else:
-                with open("output.txt", "w") as o:
+                with open(path_to_output, "w") as o:
                     o.write("Need to create canvas before executing any operations with it")
 
-drawing_tool("input.txt")
+
+if __name__ == "__main__":
+    path_to_input = input("Please enter path to input file")
+    path_to_output = input("Please enter path to output file")
+    drawing_tool(path_to_input, path_to_output)
 
